@@ -24,7 +24,8 @@ public class InventItemBarcodeServiceImpl implements InventItemBarcodeService{
 
     @Override
     public List<InventItemBarcode> findAll() {
-        return null;
+
+        return inventItemBarcodeDAO.findAll();
     }
 
     @Override

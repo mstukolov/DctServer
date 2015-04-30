@@ -26,7 +26,8 @@ public class InventItemBarcodeDAOImpl implements InventItemBarcodeDAO {
 
     @Override
     public List<InventItemBarcode> findAll() {
-        return null;
+
+        return sessionFactory.getCurrentSession().createQuery("from InventItemBarcode").list();
     }
 
     @Override
@@ -36,12 +37,12 @@ public class InventItemBarcodeDAOImpl implements InventItemBarcodeDAO {
 
     @Override
     public void update(InventItemBarcode inventItemBarcode) {
-
+        sessionFactory.getCurrentSession().update(inventItemBarcode);
     }
 
     @Override
     public void delete(InventItemBarcode inventItemBarcode) {
-
+        sessionFactory.getCurrentSession().delete(inventItemBarcode);
     }
 
     public SessionFactory getSessionFactory() {

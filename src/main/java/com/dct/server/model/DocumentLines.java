@@ -1,12 +1,37 @@
 package com.dct.server.model;
 
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * Created by stukolov_m on 17.04.2015.
  */
+@Entity
+@Indexed
+@Table(name = "documentlines")
 public class DocumentLines {
+    @Id
+    @Column(name = "scu", nullable = false)
+    @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
     String scu;
+
+    @Column(name = "docType", nullable = false)
+    @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
     String barcode;
+
+    @Column(name = "qty", nullable = false)
+    @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
     String qty;
+
+    @Column(name = "docType", nullable = false)
+    @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
     String docRef;
 
     public DocumentLines() {
