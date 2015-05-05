@@ -5,10 +5,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by stukolov_m on 17.04.2015.
@@ -18,30 +15,40 @@ import javax.persistence.Table;
 @Table(name = "documentlines")
 public class DocumentLines {
     @Id
+    @Column(name = "recid", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
+    Integer recid;
+
     @Column(name = "scu", nullable = false)
     @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
     String scu;
 
-    @Column(name = "docType", nullable = false)
+    @Column(name = "size", nullable = false)
     @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
-    String barcode;
+    String size;
 
     @Column(name = "qty", nullable = false)
     @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
-    String qty;
+    Integer qty;
 
-    @Column(name = "docType", nullable = false)
+    @Column(name = "planqty", nullable = false)
+    @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
+    Integer planqty;
+
+    @Column(name = "docRef", nullable = false)
     @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
     String docRef;
 
     public DocumentLines() {
     }
 
-    public DocumentLines(String scu, String barcode, String qty, String docRef) {
-        this.scu = scu;
-        this.barcode = barcode;
-        this.qty = qty;
-        this.docRef = docRef;
+    public Integer getRecid() {
+        return recid;
+    }
+
+    public void setRecid(Integer recid) {
+        this.recid = recid;
     }
 
     public String getScu() {
@@ -52,20 +59,28 @@ public class DocumentLines {
         this.scu = scu;
     }
 
-    public String getBarcode() {
-        return barcode;
+    public String getSize() {
+        return size;
     }
 
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
+    public void setSize(String size) {
+        this.size = size;
     }
 
-    public String getQty() {
+    public Integer getQty() {
         return qty;
     }
 
-    public void setQty(String qty) {
+    public void setQty(Integer qty) {
         this.qty = qty;
+    }
+
+    public Integer getPlanqty() {
+        return planqty;
+    }
+
+    public void setPlanqty(Integer planqty) {
+        this.planqty = planqty;
     }
 
     public String getDocRef() {
@@ -83,18 +98,22 @@ public class DocumentLines {
 
         DocumentLines that = (DocumentLines) o;
 
+        if (recid != null ? !recid.equals(that.recid) : that.recid != null) return false;
         if (scu != null ? !scu.equals(that.scu) : that.scu != null) return false;
-        if (barcode != null ? !barcode.equals(that.barcode) : that.barcode != null) return false;
+        if (size != null ? !size.equals(that.size) : that.size != null) return false;
         if (qty != null ? !qty.equals(that.qty) : that.qty != null) return false;
+        if (planqty != null ? !planqty.equals(that.planqty) : that.planqty != null) return false;
         return !(docRef != null ? !docRef.equals(that.docRef) : that.docRef != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = scu != null ? scu.hashCode() : 0;
-        result = 31 * result + (barcode != null ? barcode.hashCode() : 0);
+        int result = recid != null ? recid.hashCode() : 0;
+        result = 31 * result + (scu != null ? scu.hashCode() : 0);
+        result = 31 * result + (size != null ? size.hashCode() : 0);
         result = 31 * result + (qty != null ? qty.hashCode() : 0);
+        result = 31 * result + (planqty != null ? planqty.hashCode() : 0);
         result = 31 * result + (docRef != null ? docRef.hashCode() : 0);
         return result;
     }

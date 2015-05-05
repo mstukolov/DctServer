@@ -1,5 +1,6 @@
 package com.dct.server.service;
 
+import com.dct.server.model.Document;
 import com.dct.server.model.DocumentHeader;
 import com.dct.server.model.DocumentLines;
 
@@ -10,6 +11,8 @@ import java.util.List;
  */
 public interface DocumentLineService {
     DocumentLines search(DocumentLines line); //
+
+    List<DocumentLines> search(Document document); //
 
     List<DocumentLines> findAll();
 

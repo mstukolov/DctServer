@@ -9,6 +9,7 @@ import com.dct.server.service.DocumentService;
 import com.dct.server.service.InventItemBarcodeService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -38,20 +39,21 @@ public class MainController {
 		return new Gson().toJson(inventItemBarcodeServices.findAll());
 	}
 
-	@RequestMapping(value = "/uploadDocuments/", method = RequestMethod.POST, produces = "application/json", headers = {"Content-type=application/json"})
-	@ResponseBody
-	public JsonResponse getData(@RequestBody String body, HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/uploadDocuments/", method = RequestMethod.POST/*, produces = "application/json", headers = {"Content-type=application/json"}*/)
+	public @ResponseBody String getData(@RequestBody String body, HttpServletRequest request/*, HttpServletResponse response*/) {
 
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		JSONObject json = null;
+		String docs = request.getParameter("documents");
+		String shop = request.getParameter("shopindex");
 
-		try {
+		/*try {
 			json = (JSONObject)new JSONParser().parse(body);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		String docs = (String) json.get("documents");
-		String shop = (String) json.get("shopindex");
+		String shop = (String) json.get("shopindex");*/
 
 		Type type = new TypeToken<List<Document>>(){}.getType();
 		List<Document> documents = new Gson().fromJson(docs, type);
@@ -70,7 +72,11 @@ public class MainController {
 			} catch (java.text.ParseException e) {
 				e.printStackTrace();
 			}
-			documentService.save(documentHeader);
+				documentService.save(documentHeader);
+
+				if(documentLineService.search(item) != null){
+					System.out.println("Line is existing");
+				}
 
 			if(item.getLines() != null){
 
@@ -81,8 +87,8 @@ public class MainController {
 			}
 		}
 
-
-		return new JsonResponse("OK","");
+		//System.out.println("-------------Procedure is finished SUCCESS----------------");
+		return "SUCCESS";
 	}
 
 	/*@RequestMapping(value = "/sendData/", method = RequestMethod.POST, produces = "application/json", headers = {"Content-type=application/json"})
@@ -120,7 +126,7 @@ public class MainController {
 		//String line = body.getScu();
 		return new JsonResponse("OK","");
 	}*/
-	@RequestMapping(method = RequestMethod.GET)
+	/*@RequestMapping(method = RequestMethod.GET)
 	public String printWelcome(ModelMap model) {
 		model.addAttribute("message", "Hello world!");
 		return "hello";
@@ -139,5 +145,5 @@ public class MainController {
 		System.out.println("Android request: " + msg);
 
 		return "helloWorld";
-	}
+	}*/
 }

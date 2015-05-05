@@ -18,7 +18,7 @@ public class DocumentServiceImpl implements DocumentService {
     DocumentDAO documentDAO;
 
     @Override
-    public DocumentHeader search(DocumentHeader documnent) {
+    public DocumentHeader search(DocumentHeader document) {
         return null;
     }
 
@@ -28,17 +28,17 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public void save(DocumentHeader documnent) {
-        documentDAO.save(documnent);
+    public void save(DocumentHeader document) {
+        documentDAO.save(document);
     }
 
     @Override
-    public void update(DocumentHeader documnent) {
-        documentDAO.update(documnent);
+    public void update(DocumentHeader document) {
+        documentDAO.update(document);
     }
 
     @Override
-    public void delete(DocumentHeader documnent) {
-        documentDAO.delete(documnent);
+    public void delete(DocumentHeader document) {
+        documentDAO.delete(document);
     }
 }

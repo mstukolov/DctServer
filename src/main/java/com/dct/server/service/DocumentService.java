@@ -8,13 +8,13 @@ import java.util.List;
  * Created by stukolov_m on 30.04.2015.
  */
 public interface DocumentService {
-    DocumentHeader search(DocumentHeader documnent); //
+    DocumentHeader search(DocumentHeader document); //
 
     List<DocumentHeader> findAll();
 
-    void save(DocumentHeader documnent);
+    void save(DocumentHeader document);
 
-    void update(DocumentHeader documnent);
+    void update(DocumentHeader document);
 
-    void delete(DocumentHeader documnent);
+    void delete(DocumentHeader document);
 }
