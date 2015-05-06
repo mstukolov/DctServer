@@ -7,6 +7,7 @@ import com.dct.server.model.DocumentLines;
 import com.dct.server.service.DocumentLineService;
 import com.dct.server.service.DocumentService;
 import com.dct.server.service.InventItemBarcodeService;
+import com.dct.server.service.ShopService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
@@ -39,15 +40,22 @@ public class MainController {
 		return new Gson().toJson(inventItemBarcodeServices.findAll());
 	}
 
+	@RequestMapping(value = "/downloadShops/", method = RequestMethod.POST)
+	public @ResponseBody String getShops(@RequestBody String body, HttpServletRequest request) {
+
+		ShopService shopsService = (ShopService) context.getBean("shopService");
+		return new Gson().toJson(shopsService.findAll());
+	}
+
 	@RequestMapping(value = "/uploadDocuments/", method = RequestMethod.POST/*, produces = "application/json", headers = {"Content-type=application/json"}*/)
 	public @ResponseBody String getData(@RequestBody String body, HttpServletRequest request/*, HttpServletResponse response*/) {
 
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		JSONObject json = null;
 		String docs = request.getParameter("documents");
 		String shop = request.getParameter("shopindex");
 
-		/*try {
+		/*JSONObject json = null;
+		try {
 			json = (JSONObject)new JSONParser().parse(body);
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -62,32 +70,41 @@ public class MainController {
 		DocumentLineService documentLineService = (DocumentLineService) context.getBean("documentLineService");
 
 		for(Document item : documents){
-
-			DocumentHeader documentHeader = new DocumentHeader();
-			documentHeader.setDocNum(item.getDocNum());
-			documentHeader.setDocType(item.getDocType());
-			documentHeader.setShopindex(shop);
-			try {
-				documentHeader.setDocDate(df.parse(item.getDocDate()));
-			} catch (java.text.ParseException e) {
-				e.printStackTrace();
-			}
-				documentService.save(documentHeader);
-
-				if(documentLineService.search(item) != null){
-					System.out.println("Line is existing");
+			DocumentHeader result =  documentService.search(item);
+			//New document creation
+			if(result == null) {
+				System.out.println("Writing new document: " + item.getDocNum());
+				DocumentHeader documentHeader = new DocumentHeader();
+				documentHeader.setDocNum(item.getDocNum());
+				documentHeader.setDocType(item.getDocType());
+				documentHeader.setShopindex(shop);
+				try {
+					documentHeader.setDocDate(df.parse(item.getDocDate()));
+				} catch (java.text.ParseException e) {
+					e.printStackTrace();
 				}
-
-			if(item.getLines() != null){
-
-				for(DocumentLines line : item.getLines()){
-					documentLineService.save(line);
+				documentService.create(documentHeader);
+				if(item.getLines() != null){
+					for(DocumentLines line : item.getLines()){documentLineService.save(line);}
 				}
 
 			}
+			//Update already existing document
+			else
+				{
+						System.out.println("Already exist doc: " + item.getDocNum());
+						List<DocumentLines> documentLines = documentLineService.search(item);
+						if(documentLines.size() > 0){
+							for(DocumentLines line : documentLines){
+								System.out.println("......Line deleted: " + line.getRecid());
+								documentLineService.delete(line);
+							}
+						}
+					if(item.getLines().size() > 0)
+						{for(DocumentLines line : item.getLines()){documentLineService.save(line);}}
+
+				}
 		}
-
-		//System.out.println("-------------Procedure is finished SUCCESS----------------");
 		return "SUCCESS";
 	}
 

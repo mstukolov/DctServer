@@ -13,6 +13,7 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -47,12 +48,15 @@ public class DocumentLinesDAOImpl implements DocumentLinesDAO {
         }
         QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(DocumentLines.class).get();
         BooleanQuery booleanQuery = new BooleanQuery();
-        Query luceneQuery2 = queryBuilder.keyword().wildcard()
-                .onField("docRef")
-                .matching(document.getDocNum()).createQuery();
-        booleanQuery.add(luceneQuery2, BooleanClause.Occur.MUST);
-        List<DocumentLines> result = fullTextSession.createFullTextQuery(luceneQuery2, DocumentLines.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 
+        String docNum = document.getDocNum();
+        if (docNum != null) {
+            BooleanJunction<BooleanJunction> docNumBJ = queryBuilder.bool();
+            docNumBJ.should(queryBuilder.phrase().onField("docRef").sentence(docNum).createQuery());
+            booleanQuery.add(docNumBJ.createQuery(), BooleanClause.Occur.MUST);
+        }
+
+        List<DocumentLines> result = fullTextSession.createFullTextQuery(booleanQuery, DocumentLines.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
         return result;
     }
 

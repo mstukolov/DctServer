@@ -1,5 +1,6 @@
 package com.dct.server.dao;
 
+import com.dct.server.model.Document;
 import com.dct.server.model.DocumentHeader;
 
 import java.util.List;
@@ -9,13 +10,15 @@ import java.util.List;
  */
 public interface DocumentDAO {
 
-    DocumentHeader search(DocumentHeader documnent); //
+    DocumentHeader search(Document document); //
 
     List<DocumentHeader> findAll();
 
-    void save(DocumentHeader documnent);
+    void create(DocumentHeader document);
 
-    void update(DocumentHeader documnent);
+    void update(DocumentHeader document);
 
-    void delete(DocumentHeader documnent);
+    void delete(DocumentHeader document);
+
+    void deleteDocumentLines(Document document);
 }

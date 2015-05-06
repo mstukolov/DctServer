@@ -11,6 +11,7 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -32,7 +33,7 @@ public class DocumentDAOImpl implements DocumentDAO {
     private FullTextSession fullTextSession;
 
     @Override
-    public DocumentHeader search(DocumentHeader document) {
+    public DocumentHeader search(Document document) {
         fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
         try {
             fullTextSession.createIndexer(DocumentHeader.class).startAndWait();
@@ -41,12 +42,22 @@ public class DocumentDAOImpl implements DocumentDAO {
         }
         QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(DocumentHeader.class).get();
         BooleanQuery booleanQuery = new BooleanQuery();
-        Query luceneQuery2 = queryBuilder.keyword().wildcard()
-                .onField("docNum")
-                .andField("shopindex")
-                .matching("*" + SearchUtil.advLuceneEscape(document.getDocNum()) + "*").createQuery();
-        booleanQuery.add(luceneQuery2, BooleanClause.Occur.MUST);
-        List<DocumentHeader> result = fullTextSession.createFullTextQuery(luceneQuery2, DocumentHeader.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+
+        String docNum = document.getDocNum();
+        String shopIndex = document.getShopindex();
+
+        if (docNum != null) {
+            BooleanJunction<BooleanJunction> docNumBJ = queryBuilder.bool();
+            docNumBJ.should(queryBuilder.phrase().onField("docNum").sentence(docNum).createQuery());
+            booleanQuery.add(docNumBJ.createQuery(), BooleanClause.Occur.MUST);
+        }
+        if (shopIndex != null) {
+            BooleanJunction<BooleanJunction> shopindexBJ = queryBuilder.bool();
+            shopindexBJ.should(queryBuilder.phrase().onField("shopindex").sentence(shopIndex).createQuery());
+            booleanQuery.add(shopindexBJ.createQuery(), BooleanClause.Occur.MUST);
+        }
+
+        List<DocumentHeader> result = fullTextSession.createFullTextQuery(booleanQuery, DocumentHeader.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 
         if(result.size() > 0)  return result.get(0);
         else return null;
@@ -58,15 +69,10 @@ public class DocumentDAOImpl implements DocumentDAO {
     }
 
     @Override
-    public void save(DocumentHeader document) {
-        if(search(document) == null) {
+    public void create(DocumentHeader document) {
             sessionFactory.getCurrentSession().persist(document);
-            this.sessionFactory.getCurrentSession().flush();
-            this.sessionFactory.getCurrentSession().refresh(document);
-        }else{
-           /* Ничего не делаем*/
-        }
-
+            sessionFactory.getCurrentSession().flush();
+            sessionFactory.getCurrentSession().refresh(document);
     }
 
     @Override
@@ -77,5 +83,9 @@ public class DocumentDAOImpl implements DocumentDAO {
     @Override
     public void delete(DocumentHeader document) {
         sessionFactory.getCurrentSession().delete(document);
+    }
+
+    public void deleteDocumentLines(Document document){
+        System.out.println("Delete lines from document= " + document.getDocNum());
     }
 }

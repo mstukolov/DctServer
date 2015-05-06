@@ -24,7 +24,7 @@ public class AppTest {
         document.setShopindex("54");
 
         DocumentService documentService = (DocumentService) context.getBean("documentService");
-        documentService.save(document);
+        documentService.create(document);
 
 
         System.out.println("write end....");

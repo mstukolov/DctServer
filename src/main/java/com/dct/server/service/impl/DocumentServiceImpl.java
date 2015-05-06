@@ -1,6 +1,7 @@
 package com.dct.server.service.impl;
 
 import com.dct.server.dao.DocumentDAO;
+import com.dct.server.model.Document;
 import com.dct.server.model.DocumentHeader;
 import com.dct.server.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ public class DocumentServiceImpl implements DocumentService {
     DocumentDAO documentDAO;
 
     @Override
-    public DocumentHeader search(DocumentHeader document) {
-        return null;
+    public DocumentHeader search(Document document) {
+        return documentDAO.search(document);
     }
 
     @Override
@@ -28,8 +29,8 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public void save(DocumentHeader document) {
-        documentDAO.save(document);
+    public void create(DocumentHeader document) {
+        documentDAO.create(document);
     }
 
     @Override
@@ -40,5 +41,10 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void delete(DocumentHeader document) {
         documentDAO.delete(document);
+    }
+
+    @Override
+    public void deleteDocumentLines(Document document) {
+        documentDAO.deleteDocumentLines(document);
     }
 }
