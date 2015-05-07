@@ -22,7 +22,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -40,11 +47,14 @@ public class MainController {
 		return new Gson().toJson(inventItemBarcodeServices.findAll());
 	}
 
-	@RequestMapping(value = "/downloadShops/", method = RequestMethod.POST)
-	public @ResponseBody String getShops(@RequestBody String body, HttpServletRequest request) {
+	@RequestMapping(value = "/downloadShops/", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
+	public @ResponseBody String getShops(@RequestBody String body, HttpServletRequest request) throws UnsupportedEncodingException, CharacterCodingException {
 
 		ShopService shopsService = (ShopService) context.getBean("shopService");
-		return new Gson().toJson(shopsService.findAll());
+		String response = new Gson().toJson(shopsService.findAll());
+		String response_ISO_8859_1 = new String(response.getBytes("utf-8"), "ISO-8859-1");
+
+		return response_ISO_8859_1;
 	}
 
 	@RequestMapping(value = "/uploadDocuments/", method = RequestMethod.POST/*, produces = "application/json", headers = {"Content-type=application/json"}*/)
@@ -53,15 +63,6 @@ public class MainController {
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		String docs = request.getParameter("documents");
 		String shop = request.getParameter("shopindex");
-
-		/*JSONObject json = null;
-		try {
-			json = (JSONObject)new JSONParser().parse(body);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		String docs = (String) json.get("documents");
-		String shop = (String) json.get("shopindex");*/
 
 		Type type = new TypeToken<List<Document>>(){}.getType();
 		List<Document> documents = new Gson().fromJson(docs, type);
