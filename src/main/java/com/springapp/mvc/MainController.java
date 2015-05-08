@@ -17,6 +17,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,8 +58,9 @@ public class MainController {
 		return response_ISO_8859_1;
 	}
 
+	@Transactional
 	@RequestMapping(value = "/uploadDocuments/", method = RequestMethod.POST/*, produces = "application/json", headers = {"Content-type=application/json"}*/)
-	public @ResponseBody String getData(@RequestBody String body, HttpServletRequest request/*, HttpServletResponse response*/) {
+	synchronized public @ResponseBody String getData(@RequestBody String body, HttpServletRequest request/*, HttpServletResponse response*/) throws InterruptedException {
 
 		DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		String docs = request.getParameter("documents");
@@ -105,7 +107,9 @@ public class MainController {
 						{for(DocumentLines line : item.getLines()){documentLineService.save(line);}}
 
 				}
+			Thread.sleep(100);
 		}
+		System.out.println("Writing to DATABASE is FINISHED");
 		return "SUCCESS";
 	}
 
