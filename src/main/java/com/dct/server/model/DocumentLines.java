@@ -40,6 +40,10 @@ public class DocumentLines {
     @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
     String docRef;
 
+    @Column(name = "docType", nullable = false)
+    @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
+    String docType;
+
     public DocumentLines() {
     }
 
@@ -89,6 +93,14 @@ public class DocumentLines {
 
     public void setDocRef(String docRef) {
         this.docRef = docRef;
+    }
+
+    public String getDocType() {
+        return docType;
+    }
+
+    public void setDocType(String docType) {
+        this.docType = docType;
     }
 
     @Override

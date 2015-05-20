@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @Entity
 @Indexed
-@Table(name = "documnentheader")
+@Table(name = "documentheader")
 public class DocumentHeader {
 
     @Id
@@ -35,6 +35,10 @@ public class DocumentHeader {
     @Column(name = "shopindex", nullable = false)
     @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
     String shopindex;
+
+    @Column(name = "status", nullable = false)
+    @Field(index = org.hibernate.search.annotations.Index.YES, store = Store.NO, analyze = Analyze.YES)
+    Integer status;
 
     public DocumentHeader() {
     }
@@ -76,6 +80,14 @@ public class DocumentHeader {
 
     public void setShopindex(String shopindex) {
         this.shopindex = shopindex;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override
