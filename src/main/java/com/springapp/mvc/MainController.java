@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/dct/")
 public class MainController {
 
 	public static ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -232,6 +232,12 @@ public class MainController {
 
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	public String test(ModelMap model) {
+		model.addAttribute("msg", "Server is on connection!!!");
+		return "test";
+	}
+
+	@RequestMapping(value = "/dct/", method = RequestMethod.GET)
+	public String dct(ModelMap model) {
 		model.addAttribute("msg", "Server is on connection!!!");
 		return "test";
 	}
