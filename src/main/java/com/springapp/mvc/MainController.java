@@ -38,7 +38,7 @@ import java.util.List;
 @RequestMapping("/")
 public class MainController {
 
-	//21.11.2015 Вторая жизнь
+	//21.11.2015 Second life!!!
 	public static ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
 	@RequestMapping(value = "/inventItemBarcodeData/", method = RequestMethod.POST)
