@@ -202,6 +202,11 @@
             <artifactId>hibernate-search-analyzers</artifactId>
             <version>4.5.1.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>4.0.6.RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>
