@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/dct")
 public class MainController {
 
 	public static ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -111,7 +111,6 @@ public class MainController {
 		System.out.println("Writing to DATABASE is FINISHED");
 		return "SUCCESS";
 	}
-
 	@Transactional
 	@RequestMapping(value = "/uploadDocuments/", method = RequestMethod.POST)
 	synchronized public @ResponseBody String saveMessage(@RequestBody String body, HttpServletRequest request) throws InterruptedException {
@@ -231,8 +230,36 @@ public class MainController {
 	}
 
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
-	public String test(ModelMap model) {
-		model.addAttribute("msg", "Server is on connection!!!");
+	public String test(@RequestParam("name") String name,
+					   @RequestHeader("Accept") String accept,
+					   @RequestBody String body) {
+
+		System.out.println(name);
+		return "test";
+	}
+
+	@RequestMapping(value = "/iscreditopen", method = RequestMethod.POST)
+	public Boolean isCreditLimitOpen(@RequestParam("name") String name) {
+		name = name + "test";
+		System.out.println(name);
+		return true;
+	}
+
+	@RequestMapping(value = "/test2", method = RequestMethod.GET)
+	public @ResponseBody String test2(ModelMap model) {
+
+		return "test2";
+	}
+
+	@RequestMapping(value = "/dct/", method = RequestMethod.GET)
+	public @ResponseBody String getBaseService(ModelMap model) {
+
+		return "test2";
+	}
+
+	@RequestMapping(value = "/getWatcomData", method = RequestMethod.POST)
+	public String getWatcomData(@RequestBody String body) throws InterruptedException {
+		System.out.println("онксвем гюопня нр бюрйнлю");
 		return "test";
 	}
 
